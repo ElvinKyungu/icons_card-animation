@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive, useTemplateRef, nextTick } from 'vue'
+import { ref, reactive, useTemplateRef, onMounted, nextTick } from 'vue'
 import { animate } from 'motion'
 
+// Référence pour l'élément animé
 const animatedCircle = useTemplateRef<HTMLDivElement>('animated-circle')
 
+// Liste des états avec des icônes, titres et descriptions
 const states = reactive([
   {
     largeIcon: { component: 'PhUser', size: 120, class: 'text-gray-400' },
@@ -33,13 +35,51 @@ const states = reactive([
 
 const activeStateIndex = ref(0)
 
-const setActiveState = async (index: number) => {
-  activeStateIndex.value = index
+// Animation initiale au chargement
+const animateInitialEntry = async () => {
   await nextTick()
   if (animatedCircle.value) {
-    animate(animatedCircle.value, { translateY: '-50%' }, { duration: 0.3, easing: 'ease-in-out' })
+    animate(
+      animatedCircle.value,
+      { translateY: ['-100%', '0%'], translateX: ['50%', '0%'], opacity: [0, 1] },
+      { type: 'spring', duration: 0.8, easing: 'ease-in-out' }
+    )
   }
 }
+
+// Animation lors du changement d'état
+const setActiveState = async (index: number) => {
+  if (animatedCircle.value) {
+    // Animation de sortie pour les grandes et petites icônes
+    await Promise.all([
+      animate(
+        animatedCircle.value,
+        { translateX: ['0%', '20%'], opacity: [1, 0.5, 0] },
+        { type: 'spring', duration: 0.3, easing: 'ease-in-out' }
+      ),
+      ]);
+  }
+
+  activeStateIndex.value = index;
+
+  await nextTick();
+
+  if (animatedCircle.value) {
+    // Animation d'entrée pour les grandes et petites icônes
+    animate(
+      animatedCircle.value,
+      { translateY: ['-100%', '0%'], translateX: ['50%', '0%'], opacity: [0, 1] },
+      { type: 'spring', duration: 0.5, easing: 'ease-in-out' }
+    );
+    animateSmallIcon(true); // Animation d'entrée pour la petite icône
+  }
+};
+
+
+// Appel de l'animation initiale
+onMounted(() => {
+  animateInitialEntry()
+})
 </script>
 
 <template>
@@ -50,7 +90,6 @@ const setActiveState = async (index: number) => {
       </div>
       <div class="icon">
         <div class="flex items-center justify-center relative">
-          <!-- Icône principale -->
           <div ref="animated-circle">
             <component
               :is="states[activeStateIndex].largeIcon.component"
@@ -58,8 +97,9 @@ const setActiveState = async (index: number) => {
               :class="states[activeStateIndex].largeIcon.class"
             />
           </div>
-          <!-- Icône secondaire -->
-          <div class="bg-slate-200 w-20 rounded-full h-20 absolute left-[56%] top-0 flex items-center justify-center">
+          <div
+            class="bg-slate-200 w-20 rounded-full h-20 absolute left-[56%] top-0 flex items-center justify-center small-icon"
+          >
             <component
               :is="states[activeStateIndex].smallIcon.component"
               :size="states[activeStateIndex].smallIcon.size"
@@ -67,18 +107,15 @@ const setActiveState = async (index: number) => {
           </div>
         </div>
         <div class="space-y-7 flex flex-col items-center mt-10">
-          <!-- Texte -->
           <h2 class="text-3xl font-bold">{{ states[activeStateIndex].title }}</h2>
           <p class="text-xl font-medium text-gray-500 text-center">
             {{ states[activeStateIndex].description }}
           </p>
-          <!-- Bouton -->
           <div>
             <button class="py-3 px-20 text-xl font-medium bg-slate-200 rounded-full">
               Learn more
             </button>
           </div>
-          <!-- Navigation -->
           <div class="flex gap-3 pt-5">
             <span
               v-for="(state, index) in states"
