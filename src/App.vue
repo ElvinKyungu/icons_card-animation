@@ -3,9 +3,8 @@ import Animation from './components/Animation.vue'
 </script>
 
 <template>
-  <Animation/>
+  <Animation class="font- font-sans" />
+
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
