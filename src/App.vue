@@ -4,7 +4,6 @@ import Animation from './components/Animation.vue'
 
 <template>
   <Animation class="font-sans" />
-
 </template>
 
 <style scoped></style>

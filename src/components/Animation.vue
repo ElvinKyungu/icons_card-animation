@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive, useTemplateRef, onMounted, nextTick } from 'vue';
-import { animate } from 'motion';
+import { ref, reactive, useTemplateRef, onMounted, nextTick } from 'vue'
+import { animate } from 'motion'
 
-const animateLargeIcon = useTemplateRef<HTMLDivElement>('animated-large');
-const animateSmallIcon = useTemplateRef<HTMLDivElement>('animated-small');
-const textContainer = useTemplateRef<HTMLDivElement>('text-container');
-const buttonContainer = useTemplateRef<HTMLDivElement>('button-container');
+const animateLargeIcon = useTemplateRef<HTMLDivElement>('animated-large')
+const animateSmallIcon = useTemplateRef<HTMLDivElement>('animated-small')
+const textContainer = useTemplateRef<HTMLDivElement>('text-container')
+const buttonContainer = useTemplateRef<HTMLDivElement>('button-container')
 
 const states = reactive([
   {
@@ -32,98 +32,108 @@ const states = reactive([
     title: 'Performance Tracking',
     description: 'Keep track of trends and performance metrics easily.',
   },
-]);
+])
 
-const activeStateIndex = ref(0);
+const activeStateIndex = ref(0)
 
 const animateInitialEntry = async () => {
-  await nextTick();
+  await nextTick()
 
   if (animateLargeIcon.value) {
     animate(
       animateLargeIcon.value,
       { translateY: ['-100%', '0%'], translateX: ['50%', '0%'], opacity: [0, 1] },
-      { type: 'spring', duration: 0.8, easing: 'ease-in-out' }
-    );
+      { type: 'spring', duration: 0.8, easing: 'ease-in-out' },
+    )
   }
 
   if (animateSmallIcon.value) {
     animate(
       animateSmallIcon.value,
       { translateY: ['100%', '0%'], translateX: ['-50%', '0%'], opacity: [0, 1] },
-      { type: 'spring', duration: 0.8, easing: 'ease-in-out' }
-    );
+      { type: 'spring', duration: 0.8, easing: 'ease-in-out' },
+    )
   }
-};
+}
 
 const setActiveState = async (index: number) => {
-  if (animateLargeIcon.value && animateSmallIcon.value && textContainer.value && buttonContainer.value) {
+  if (
+    animateLargeIcon.value &&
+    animateSmallIcon.value &&
+    textContainer.value &&
+    buttonContainer.value
+  ) {
     await Promise.all([
       // Animate large icon out
       animate(
         animateLargeIcon.value,
         { translateX: ['0%', '20%'], opacity: [1, 0] },
-        { type: 'spring', duration: 0.3, easing: 'ease-in-out' }
+        { type: 'spring', duration: 0.3, easing: 'ease-in-out' },
       ),
       // Animate small icon out
       animate(
         animateSmallIcon.value,
         { translateX: ['0%', '-20%'], opacity: [1, 0] },
-        { type: 'spring', duration: 0.3, easing: 'ease-in-out' }
+        { type: 'spring', duration: 0.3, easing: 'ease-in-out' },
       ),
       // Animate text out
       animate(
         textContainer.value,
         { translateY: ['0%', '100%'], opacity: [1, 0] },
-        { type: 'spring', duration: 0.3, easing: 'ease-in-out' }
+        { type: 'spring', duration: 0.3, easing: 'ease-in-out' },
       ),
       // Animate button out
       animate(
         buttonContainer.value,
         { translateY: ['0%', '100%'], opacity: [1, 0] },
-        { type: 'spring', duration: 0.3, easing: 'ease-in-out' }
+        { type: 'spring', duration: 0.3, easing: 'ease-in-out' },
       ),
-    ]);
+    ])
   }
 
-  activeStateIndex.value = index;
+  activeStateIndex.value = index
 
-  await nextTick();
+  await nextTick()
 
-  if (animateLargeIcon.value && animateSmallIcon.value && textContainer.value && buttonContainer.value) {
+  if (
+    animateLargeIcon.value &&
+    animateSmallIcon.value &&
+    textContainer.value &&
+    buttonContainer.value
+  ) {
     await Promise.all([
       // Animate large icon in
       animate(
         animateLargeIcon.value,
         { translateY: ['-100%', '0%'], translateX: ['50%', '0%'], opacity: [0, 1] },
-        { type: 'spring', duration: 0.5, easing: 'ease-in-out' }
+        { type: 'spring', duration: 0.5, easing: 'ease-in-out' },
       ),
       // Animate small icon in
       animate(
         animateSmallIcon.value,
         { translateY: ['100%', '0%'], translateX: ['-50%', '0%'], opacity: [0, 1] },
-        { type: 'spring', duration: 0.5, easing: 'ease-in-out' }
+        { type: 'spring', duration: 0.5, easing: 'ease-in-out' },
       ),
       // Animate text in
       animate(
         textContainer.value,
         { translateY: ['80%', '0%'], opacity: [0, 1] },
-        { type: 'spring', duration: 0.5, easing: 'ease-in-out' }
+        { type: 'spring', duration: 0.5, easing: 'ease-in-out' },
       ),
       // Animate button in
       animate(
         buttonContainer.value,
         { translateY: ['70%', '0%'], opacity: [0, 1] },
-        { type: 'spring', duration: 0.4, easing: 'ease-in-out' }
+        { type: 'spring', duration: 0.4, easing: 'ease-in-out' },
       ),
-    ]);
+    ])
   }
-};
+}
 
 // Call the initial animation
 onMounted(() => {
-  animateInitialEntry();
-});
+  animateInitialEntry()
+})
 </script>
 
 <template>
