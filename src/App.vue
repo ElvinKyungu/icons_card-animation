@@ -3,7 +3,7 @@ import Animation from './components/Animation.vue'
 </script>
 
 <template>
-  <Animation class="font- font-sans" />
+  <Animation class="font-sans" />
 
 </template>
 
